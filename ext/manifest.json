@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "Replit RPC",
-  "version": "<3",
+  "version": "1.0",
 
   "description": "Show off your current project on Discord!",
 
