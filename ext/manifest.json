@@ -1,0 +1,26 @@
+{
+
+  "manifest_version": 2,
+  "name": "Replit RPC",
+  "version": "<3",
+
+  "description": "Show off your current project on Discord!",
+
+  "icons": {
+    "48": "icons/48.png"
+  },
+
+  "content_scripts": [
+    {
+      "run_at": "document_start",
+      "matches": ["*://replit.com/*/*"],
+      "js": ["contentscript.js"]
+    }
+  ],
+
+  "permissions": [
+    "activeTab",
+    "*://replit.com/*"
+  ]
+
+}

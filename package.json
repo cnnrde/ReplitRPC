@@ -1,0 +1,9 @@
+{
+	"scripts": {
+		"chrome": "zip -q -1 chrome.zip ext",
+		"firefox": "",
+		"mac": "yarn --cwd electron run make:mac",
+		"linux": "yarn --cwd electron run make:linux",
+		"pc": "yarn --cwd electron run make:windows"
+	}
+}
