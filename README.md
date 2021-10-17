@@ -12,7 +12,7 @@ ReplitRPC is the easy way to share the current project you're working on to your
 | Browser | Extension                                                              |
 | ------- | ---------------------------------------------------------------------- |
 | Firefox | [ReplitRPC](https://addons.mozilla.org/en-GB/firefox/addon/replit-rpc) |
-| Chrome  | Pending me not being lazy and uploading it                             |
+| Chrome  | Pending approval                                                       |
 
 4. Run the Desktop app
 5. Open a repl
