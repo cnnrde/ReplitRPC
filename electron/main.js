@@ -5,15 +5,17 @@ const {
   Tray,
   Menu,
   Notification,
-  ipcMain,
-  ipcRenderer,
+  autoUpdater
 } = require('electron')
 const Koa = require('koa')
 const cors = require('@koa/cors')
 const koaBody = require('koa-body')
 const Router = require('koa-router')
 const RPC = require('discord-rpc')
-const { autoUpdater } = require('electron-updater')
+
+// Updater
+const server = "https://hazel-replitrpc.vercel.app";
+const url = `${server}/update/${process.platform}/${app.getVersion()}`
 
 // this should be placed at top of main.js to handle setup events quickly
 if (handleSquirrelEvent()) {
@@ -96,39 +98,33 @@ let extResources = {
   rb: 'ruby',
   ts: 'typescript',
   rs: 'rust',
+  go: 'golang'
 }
+// i added golang
 // i literally hate myself for writing this - connor
 
 const clientId = '891607135769739285'
 
-const client = new RPC.Client({ transport: 'ipc' })
-
-// client.on('ready', () => {
-//   console.log('Authed for user', client.user.username);
-// })
-
-// Log in to RPC with client id
-client.login({ clientId })
-
-// const createUpdaterWindow = () => {
-//   const browser = new BrowserWindow({
-//     width: 500,
-//     height: 500,
-//     frame: false,
-//     closable: false,
-//     minimizable: true,
-//     resizable: false,
-//     transparent: true,
-//     webPreferences: {
-//       nodeIntegration: false,
-//       contextIsolation: true,
-//       enableRemoteModule: false,
-//       preload: app.getAppPath() + '/view/render.js',
-//     },
-//   })
-//   browser.loadFile(app.getAppPath() + '/view/update.html')
-//   return browser
-// }
+const createUpdaterWindow = () => {
+  const browser = new BrowserWindow({
+    width: 500,
+    height: 500,
+    frame: false,
+    closable: false,
+    minimizable: true,
+    resizable: false,
+    transparent: true,
+	alwaysOnTop: true,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      enableRemoteModule: false,
+      preload: app.getAppPath() + '/view/render.js',
+    },
+  })
+  browser.loadFile(app.getAppPath() + '/view/update.html')
+  return browser;
+}
 
 const parseFileType = (fileName) => {
   const splits = fileName.split('.')
@@ -138,7 +134,6 @@ const parseFileType = (fileName) => {
 
 const changeStatus = (status) => {
   try {
-    console.log('[OK]', status.now, status.enabled)
     if (config.enabled && status.now !== {}) {
       if (!status.now.fileName) {
         return client.clearActivity()
@@ -164,7 +159,7 @@ const changeStatus = (status) => {
           details: `Editing ${fileName}`,
           state: `Working on ${name}`,
           largeImageKey: 'replit',
-          largeImageText: `Logged in as ${author}`,
+          largeImageText: `Logged in as `,
           // smallImageKey: parseFileType(fileName)
         })
       } else {
@@ -203,6 +198,11 @@ let config = {
   lastSent: 0,
 }
 
+const client = new RPC.Client({ transport: 'ipc' })
+
+// Log in to RPC with client id
+client.login({ clientId })
+
 setTimeout(() => {
   const now = Math.round(new Date().getTime() / 1000)
   if (config.lastSent + 15 < now) {
@@ -214,10 +214,10 @@ setTimeout(() => {
 // Electron
 app.whenReady().then(() => {
   /*  ELECTRON UPDATER */
-  //autoUpdater.updateConfigPath = __dirname+'/app-update.yml';
-  //autoUpdater.checkForUpdates();
+  process.env.NODE_ENV === "production" && autoUpdater.setFeedURL({ url })
+  // testing v
+  autoUpdater.setFeedURL({ url });
   /*  ELECTRON UPDATER */
-  // createUpdaterWindow()
   new Notification({
     title: 'Replit RPC',
     body: 'Replit RPC is now running and minimized to tray.',
@@ -262,56 +262,49 @@ koa.use(koaBody())
 koa.listen(51337)
 router.post('/', (ctx, next) => {
   config.now = ctx.request.body
-  config.lastSent = Math.round(new Date().getTime() / 1000)
-  // console.log(config)
+  config.lastSent = Math.round(new Date().getTime() / 1000);
   changeStatus(config)
+  ctx.body = "ok"
   next()
 })
 
-// router.get('/ping', (ctx, next) => {
-//   ctx.body = 'pong'
-//   next()
-// })
+router.get('/ping', (ctx, next) => {
+  ctx.body = 'pong'
+  next()
+})
 
 koa.use(router.routes())
 
 /*  ELECTRON UPDATER */
-// autoUpdater.on('checking-for-update', () => {
-// 	updaterWindow = new BrowserWindow({
-// 		width: 400,
-// 		height: 400,
-// 		frame: false,
-// 		closable: false,
-// 		minimizable: false,
-// 		resizable: false,
-// 		alwaysOnTop: true,
-// 		roundedCorners: true,
-// 		webPreferences: {
-// 			nodeIntegration: false,
-// 			contextIsolation: true,
-// 			enableRemoteModule: false,
-// 			preload: app.getAppPath()+'/view/render.js'
-// 		}
-// 	});
-// 	updaterWindow.loadFile("view/update.html");
-// 	updaterWindow.webContents.send("checking", "");
-// })
-// autoUpdater.on('update-available', (info) => {
-// })
-// autoUpdater.on('update-not-available', (info) => {
-// 	updaterWindow.destroy();
-// 	updaterWindow = null;
-// })
-// autoUpdater.on('error', (err) => {
-// 	updaterWindow.webContents.send("error", err);
-// 	setTimeout(()=>{
-// 		app.quit();
-// 	}, 5000)
-// })
-// autoUpdater.on('download-progress', (progressObj) => {
-// 	updaterWindow.webContents.send("prog", progressObj);
-// })
-// autoUpdater.on('update-downloaded', (info) => {
-//   autoUpdater.quitAndInstall();
-// })
+let updaterWindow;
+autoUpdater.on('checking-for-update', () => {
+	updaterWindow = createUpdaterWindow();
+	updaterWindow.webContents.send("checking", "");
+})
+autoUpdater.on('update-available', (info) => {
+})
+autoUpdater.on('update-not-available', (info) => {
+	updaterWindow.destroy();
+	updaterWindow = null;
+})
+autoUpdater.on('error', (err) => {
+	console.log(url, err)
+	if (!updaterWindow) {
+		updaterWindow = createUpdaterWindow();
+	}
+	updaterWindow.webContents.send("error", err);
+	setTimeout(()=>{
+		updaterWindow.destroy();
+		app.quit();
+	}, 10000)
+})
+autoUpdater.on('download-progress', (progressObj) => {
+	updaterWindow.webContents.send("prog", progressObj);
+})
+autoUpdater.on('update-downloaded', (info) => {
+	updaterWindow.webContents.send("restart", progressObj);
+	setTimeout(() => {
+		autoUpdater.quitAndInstall();
+	}, 1000);
+})
 /*  ELECTRON UPDATER */
