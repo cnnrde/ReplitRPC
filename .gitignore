@@ -4,3 +4,4 @@ nodemon.json
 builds
 out
 web-ext-artifacts
+.DS_STORE

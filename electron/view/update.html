@@ -26,7 +26,9 @@
         <div class="text-content">
           <div class="content-holder">
             <h2>Launching...</h2>
-            <h4>Checking for updates...</h4>
+            <div id="con">
+				<h4>Checking for updates...</h4>
+			</div>
           </div>
         </div>
       </div>
@@ -68,6 +70,7 @@
     margin: 0;
     width: 400px;
     height: 400px;
+	-webkit-app-region: drag;
   }
 
   main {
@@ -111,6 +114,8 @@
     width: 150px;
     height: 150px;
     position: absolute;
+	transition: all 0.2s;
+	transform: rotate(0deg);
   }
 
   .logoWrap {
