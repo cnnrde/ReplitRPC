@@ -3,10 +3,10 @@
 <plist version="1.0">
   <dict>
     <key>NSAppTransportSecurity</key>  
-	<dict>  
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
+      <dict>  
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+      </dict>
     <key>com.apple.security.cs.allow-jit</key>
     <true/>
     <key>com.apple.security.cs.debugger</key>
