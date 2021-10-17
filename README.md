@@ -78,10 +78,17 @@ git clone https://github.com/connordennison/ReplitRPC.git
 cd ReplitRPC
 ```
 
-3. Install yarn packages
+3. cd into electron folder and install dependencies
 
 ```
-yarn install
+cd electron
+yarn install --dev
+```
+
+4. cd out of the electron folder
+
+```
+cd ..
 ```
 
 4. Run the build command for the platform you want to build for
