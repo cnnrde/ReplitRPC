@@ -5,7 +5,8 @@ const {
   Tray,
   Menu,
   Notification,
-  autoUpdater
+  autoUpdater,
+  shell
 } = require('electron')
 const Koa = require('koa')
 const cors = require('@koa/cors')
@@ -14,8 +15,10 @@ const Router = require('koa-router')
 const RPC = require('discord-rpc')
 
 // Updater
-const server = "https://hazel-replitrpc.vercel.app";
+const server = "https://hazel-replitrpc.vercel.app/";
 const url = `${server}/update/${process.platform}/${app.getVersion()}`
+console.log(url, process.platform, app.getVersion())
+autoUpdater.setFeedURL({url})
 
 // this should be placed at top of main.js to handle setup events quickly
 if (handleSquirrelEvent()) {
@@ -36,7 +39,7 @@ function handleSquirrelEvent() {
   const updateDotExe = path.resolve(path.join(rootAtomFolder, 'Update.exe'))
   const exeName = path.basename(process.execPath)
 
-  const spawn = function (command, args) {
+  const spawn = (command, args) => {
     let spawnedProcess, error
 
     try {
@@ -46,7 +49,7 @@ function handleSquirrelEvent() {
     return spawnedProcess
   }
 
-  const spawnUpdate = function (args) {
+  const spawnUpdate = (args) => {
     return spawn(updateDotExe, args)
   }
 
@@ -114,7 +117,8 @@ const createUpdaterWindow = () => {
     minimizable: true,
     resizable: false,
     transparent: true,
-	alwaysOnTop: true,
+	  alwaysOnTop: true,
+    icon: app.getAppPath() + '/icons/512.ico',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -214,9 +218,7 @@ setTimeout(() => {
 // Electron
 app.whenReady().then(() => {
   /*  ELECTRON UPDATER */
-  process.env.NODE_ENV === "production" && autoUpdater.setFeedURL({ url })
-  // testing v
-  autoUpdater.setFeedURL({ url });
+  autoUpdater.checkForUpdates()
   /*  ELECTRON UPDATER */
   new Notification({
     title: 'Replit RPC',
@@ -224,7 +226,24 @@ app.whenReady().then(() => {
   }).show()
   tray = new Tray(__dirname + '/icons/48.png')
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Replit RPC', enabled: false },
+    { label: 'Replit RPC', enabled: true, click: ()=>{
+      shell.openExternal("https://replitrpc.repl.co/")
+    } },
+    { label: 'Credits', enabled: true, click: ()=>{
+      const bw = new BrowserWindow({
+        width: 600,
+        height: 400,
+        autoHideMenuBar: true,
+        icon: app.getAppPath() + '/icons/512.ico',
+        webPreferences: {
+          nodeIntegration: false,
+          contextIsolation: true,
+          enableRemoteModule: false,
+          preload: app.getAppPath() + '/view/render.js',
+        },
+      })
+      bw.loadFile(app.getAppPath()+"/view/credits.html")
+    } },
     {
       label: 'Enabled',
       type: 'checkbox',
@@ -259,7 +278,12 @@ app.whenReady().then(() => {
 // Koa
 koa.use(cors())
 koa.use(koaBody())
-koa.listen(51337)
+try {
+  koa.listen(51337)
+} catch {
+  app.exit(1);
+  process.exit(1)
+}
 router.post('/', (ctx, next) => {
   config.now = ctx.request.body
   config.lastSent = Math.round(new Date().getTime() / 1000);
@@ -267,7 +291,6 @@ router.post('/', (ctx, next) => {
   ctx.body = "ok"
   next()
 })
-
 router.get('/ping', (ctx, next) => {
   ctx.body = 'pong'
   next()
@@ -282,27 +305,31 @@ autoUpdater.on('checking-for-update', () => {
 	updaterWindow.webContents.send("checking", "");
 })
 autoUpdater.on('update-available', (info) => {
+  updaterWindow.webContents.send("update", info);
 })
 autoUpdater.on('update-not-available', (info) => {
-	updaterWindow.destroy();
-	updaterWindow = null;
+  updaterWindow.webContents.send("noUpdate", info);
+  setTimeout(()=>{
+    updaterWindow.destroy();
+    updaterWindow = null;
+  }, 1000)
 })
 autoUpdater.on('error', (err) => {
-	console.log(url, err)
 	if (!updaterWindow) {
 		updaterWindow = createUpdaterWindow();
 	}
-	updaterWindow.webContents.send("error", err);
+	updaterWindow.webContents.send("error", err.message);
 	setTimeout(()=>{
 		updaterWindow.destroy();
+    updaterWindow = null;
 		app.quit();
-	}, 10000)
+	}, 7500)
 })
 autoUpdater.on('download-progress', (progressObj) => {
 	updaterWindow.webContents.send("prog", progressObj);
 })
 autoUpdater.on('update-downloaded', (info) => {
-	updaterWindow.webContents.send("restart", progressObj);
+	updaterWindow.webContents.send("restart", info);
 	setTimeout(() => {
 		autoUpdater.quitAndInstall();
 	}, 1000);

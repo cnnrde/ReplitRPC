@@ -11,25 +11,37 @@ const action = (callback) => {
 const { ipcRenderer } = require('electron');
 ipcRenderer.on("prog", (e)=>{
 	action(()=>{
-
+		document.querySelector("h2").innerHTML = "Downloading update";
 	});
-	h2.innerHTML = e;
 })
 ipcRenderer.on("checking", (e)=>{
 	action(()=>{
-		h2.innerHTML = "Checking for updates...";
+		document.querySelector("h2").innerHTML = "Checking for updates...";
+		document.querySelector("#con").innerHTML = "<h4>Please wait...</h4>";
 	});
 })
 ipcRenderer.on("error", (e)=>{
 	action(()=>{
 		document.querySelector("h2").innerHTML = "Error";
-		document.querySelector("#con").innerHTML = "Failed to connect to the update server";
+		document.querySelector("#con").innerHTML = "<h4>Update failed.</h4>";
 		document.querySelector(".logo").classList.remove("spinner")
 	});
 })
 ipcRenderer.on("restart", ()=>{
 	action(()=>{
 		document.querySelector("h2").innerHTML = "Restarting";
-		document.querySelector("#con").innerHTML = "Restarting to install update.";
+		document.querySelector("#con").innerHTML = "<h4>Restarting to install update.</h4>";
+	});
+})
+ipcRenderer.on("Update", ()=>{
+	action(()=>{
+		document.querySelector("h2").innerHTML = "Updating";
+		document.querySelector("#con").innerHTML = "<h4>An update was found, updating now.</h4>";
+	});
+})
+ipcRenderer.on("noUpdate", ()=>{
+	action(()=>{
+		document.querySelector("h2").innerHTML = "Starting";
+		document.querySelector("#con").innerHTML = "<h4>Please wait.</h4>";
 	});
 })

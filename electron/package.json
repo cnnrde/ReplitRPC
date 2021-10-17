@@ -1,5 +1,5 @@
 {
-  "name": "ReplitRPC",
+  "name": "replitrpc",
   "version": "1.0.0",
   "main": "main.js",
   "license": "GPL-3.0-only",
@@ -27,22 +27,21 @@
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-	"make:mac": "electron-forge make --targets @electron-forge/maker-zip --arch x64 --platform darwin",
+    "make:mac": "electron-forge make --targets @electron-forge/maker-zip --arch x64 --platform darwin",
     "make:portable": "electron-forge make --targets @electron-forge/maker-zip --arch x64 --platform win32"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.61",
     "@electron-forge/maker-deb": "^6.0.0-beta.61",
+    "@electron-forge/maker-dmg": "^6.0.0-beta.61",
     "@electron-forge/maker-pkg": "latest",
     "@electron-forge/maker-rpm": "^6.0.0-beta.61",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
-    "electron": "^15.1.2",
-    "nodemon": "^2.0.13"
+    "electron": "^15.1.2"
   },
   "dependencies": {
     "@koa/cors": "^3.1.0",
-    "axios": "^0.23.0",
     "discord-rpc": "^4.0.1",
     "electron-squirrel-startup": "^1.0.0",
     "koa": "^2.13.3",
@@ -52,13 +51,13 @@
   "config": {
     "forge": {
       "packagerConfig": {
-		"osxSign": {
-			"hardened-runtime": true,
-			"entitlements": "entitlements.plist",
-			"entitlements-inherit": "entitlements.plist",
-			"signature-flags": "library"
-		}
-	  },
+        "osxSign": {
+          "hardened-runtime": true,
+          "entitlements": "entitlements.plist",
+          "entitlements-inherit": "entitlements.plist",
+          "signature-flags": "library"
+        }
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
@@ -73,15 +72,23 @@
           "name": "@electron-forge/maker-zip",
           "platforms": [
             "darwin"
-          ]
+          ],
+          "icon": "icons/512.ico"
+        },
+        {
+          "name": "@electron-forge/maker-dmg",
+          "config": {},
+          "icon": "icons/512.ico"
         },
         {
           "name": "@electron-forge/maker-deb",
-          "config": {}
+          "config": {},
+          "icon": "icons/512.ico"
         },
         {
           "name": "@electron-forge/maker-rpm",
-          "config": {}
+          "config": {},
+          "icon": "icons/512.ico"
         }
       ]
     }
