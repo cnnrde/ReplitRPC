@@ -8,7 +8,132 @@
 </head>
 
 <body>
-  <h1></h1>
+  <main>
+    <div aria-hidden="true" class="center abs">
+      <div class="top">
+        <div class="logoWrap">
+          <div class="logo spinner">
+            <img width="150" height="150" class="spiner" src="../icons/256_outer.png">
+          </div>
+          <div class="logo">
+            <img width="150" height="150" class="spiner" src="../icons/256_inner.png">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div aria-hidden="true" class="center abs">
+      <div class="text">
+        <div class="text-content">
+          <div class="content-holder">
+            <h2>Launching...</h2>
+            <h4>Checking for updates...</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </body>
 
 </html>
+<style>
+  @font-face {
+    font-family: 'Roboto';
+    src: url("Roboto-Bold.ttf");
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  * {
+    font-family: 'Roboto', sans-serif;
+    user-select: none;
+  }
+
+  :root {
+    background: transparent;
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    place-content: center;
+  }
+
+  body {
+    margin: 0;
+    width: 400px;
+    height: 400px;
+  }
+
+  main {
+    background: #0F172A;
+    width: 400px;
+    height: 400px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 45px 1px #000;
+  }
+
+  .top {
+    width: 250px;
+    height: 250px;
+    display: grid;
+    justify-content: center;
+    align-content: start;
+  }
+
+  .text {
+    width: 250px;
+    height: 250px;
+    display: grid;
+    justify-content: center;
+    align-content: end;
+  }
+
+  .text-content {
+    color: #F8FAFC;
+    width: 300px;
+    height: 100px;
+    display: grid;
+    place-content: center;
+    text-align: center;
+  }
+
+  .content-holder {
+    height: auto;
+  }
+
+  .logo {
+    width: 150px;
+    height: 150px;
+    position: absolute;
+  }
+
+  .logoWrap {
+    width: 150px;
+    height: 150px;
+    display: grid;
+    place-content: center;
+  }
+
+  .center {
+    width: 400px;
+    height: 400px;
+    display: grid;
+    place-content: center;
+  }
+
+  .abs {
+    position: absolute;
+  }
+
+  .spinner {
+    width: 150px;
+    height: 150px;
+    animation: spin 1.75s linear infinite;
+  }
+</style>

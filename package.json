@@ -1,11 +1,10 @@
 {
+	"main": "electron/main.js",
 	"license": "GPL-3.0-only",
 	"scripts": {
 		"chrome": "zip -q -1 chrome.zip ext",
 		"firefox": "web-ext build -s ext",
-		"mac": "yarn --cwd electron run make:mac",
-		"linux": "yarn --cwd electron run make:linux",
-		"pc": "yarn --cwd electron run make:windows"
+		"make": "yarn --cwd electron run make"
 	},
 	"dependencies": {
 		"web-ext": "^6.5.0"
