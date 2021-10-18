@@ -17,13 +17,14 @@ ReplitRPC is the easy way to share the current project you're working on to your
 4. Run the Desktop app
 5. Open a repl
 
-And that's it! You should see your rich presence update within 20 seconds (as long as you have a repl open with the extension installed).
+And that's it! You should see your rich presence update within 40 seconds (as long as you have a repl open with the extension installed).
 
 ## Uninstallation
 
 ### Windows
 
 Go to `%localappdata%` and delete the `ReplitRPC` folder.
+Alternatively, open the add and remove programs dialog and remove `ReplitRPC` by `Connor Dennison`.
 
 ### macOS
 

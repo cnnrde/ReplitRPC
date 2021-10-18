@@ -7,6 +7,7 @@ const {
   Notification,
   ipcMain,
   ipcRenderer,
+  dialog,
 } = require('electron')
 const Koa = require('koa')
 const cors = require('@koa/cors')
@@ -14,6 +15,12 @@ const koaBody = require('koa-body')
 const Router = require('koa-router')
 const RPC = require('discord-rpc')
 const { autoUpdater } = require('electron-updater')
+
+// stop multi-instance
+const lock = app.requestSingleInstanceLock()
+if (!lock) {
+  app.quit()
+}
 
 // this should be placed at top of main.js to handle setup events quickly
 if (handleSquirrelEvent()) {
@@ -138,8 +145,8 @@ const parseFileType = (fileName) => {
 
 const changeStatus = (status) => {
   try {
-    console.log('[OK]', status.now, status.enabled)
     if (config.enabled && status.now !== {}) {
+      console.log('[OK]', status.now, status.enabled)
       if (!status.now.fileName) {
         return client.clearActivity()
       }
@@ -160,7 +167,7 @@ const changeStatus = (status) => {
         ? 0
         : `${status.now.name || 'null'}.${status.now.user || 'null'}.repl.co`
       if (!extResources[parseFileType(fileName)]) {
-        return client.setActivity({
+        client.setActivity({
           details: `Editing ${fileName}`,
           state: `Working on ${name}`,
           largeImageKey: 'replit',
@@ -168,11 +175,11 @@ const changeStatus = (status) => {
           // smallImageKey: parseFileType(fileName)
         })
       } else {
-        return client.setActivity({
+        client.setActivity({
           details: `Editing ${fileName}`,
           state: `Working on ${name}`,
           largeImageKey: `${extResources[parseFileType(fileName)]}`,
-          largeImageText: `Editing a ${parseFileType(
+          largeImageText: `Editing a .${parseFileType(
             fileName,
           ).toUpperCase()} file`,
           smallImageKey: 'replit',
@@ -180,12 +187,13 @@ const changeStatus = (status) => {
           // smallImageKey: parseFileType(fileName)
         })
       }
+      config.now = {}
     } else {
       // remove
       client.clearActivity()
     }
   } catch (err) {
-    console.log('[NOT OK] did an oopsie')
+    console.log('[NOT OK] did an oopsie', err)
   }
 }
 
@@ -203,12 +211,14 @@ let config = {
   lastSent: 0,
 }
 
-setTimeout(() => {
-  const now = Math.round(new Date().getTime() / 1000)
-  if (config.lastSent + 15 < now) {
-    config.now = {}
-  }
-  changeStatus()
+setInterval(() => {
+  // const now = new Date().getTime()
+  // if (config.lastSent + 15 < now) {
+  //   config.now = {}
+  //   return
+  // }
+  // changeStatus(config.now)
+  if (config.now) changeStatus(config)
 }, 15000)
 
 // Electron
@@ -262,9 +272,14 @@ koa.use(koaBody())
 koa.listen(51337)
 router.post('/', (ctx, next) => {
   config.now = ctx.request.body
-  config.lastSent = Math.round(new Date().getTime() / 1000)
+  config.lastSent = new Date().getTime()
   // console.log(config)
-  changeStatus(config)
+  // changeStatus(config)
+  ctx.body = 'ok'
+  next()
+})
+router.get('/', (ctx, next) => {
+  ctx.body = 'null'
   next()
 })
 
