@@ -9,10 +9,14 @@ ReplitRPC is the easy way to share the current project you're working on to your
 1. Download and install the Desktop app from releases, or build it yourself
 2. Download and install the extension from the web store, or build it yourself
 
-| Browser | Extension                                                              |
-| ------- | ---------------------------------------------------------------------- |
-| Firefox | [ReplitRPC](https://addons.mozilla.org/en-GB/firefox/addon/replit-rpc) |
-| Chrome  | Pending approval                                                       |
+| Browser | Extension                                                                                                  |
+| ------- | ---------------------------------------------------------------------------------------------------------- |
+| Firefox | ~~[ReplitRPC](https://addons.mozilla.org/en-GB/firefox/addon/replit-rpc)~~ build it yourself\*<sup>1</sup> |
+| Chrome  | ~~Pending approval~~ build it yourself\*<sup>2</sup>                                                       |
+
+\*<sup>1</sup> firefox stopped extensions on the store from interfacing with unsecure webpages (meaning the ext doesn't connect)
+
+\*<sup>2</sup> i've not picked up any development on this for a while, i really don't wanna go through the whole extension publishing process for chrome
 
 4. Run the Desktop app
 5. Open a repl
