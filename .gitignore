@@ -4,3 +4,5 @@ nodemon.json
 builds
 out
 web-ext-artifacts
+.firefoxcreds
+.web-extension-id
