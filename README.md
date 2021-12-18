@@ -19,7 +19,7 @@ ReplitRPC is the easy way to share the current project you're working on to your
 \*<sup>2</sup> i've not picked up any development on this for a while, i really don't wanna go through the whole extension publishing process for chrome
 
 4. Run the Desktop app
-5. Open a repl
+5. Open a repl in your browser!
 
 And that's it! You should see your rich presence update within 40 seconds (as long as you have a repl open with the extension installed).
 
@@ -61,7 +61,7 @@ Figure it out (you use linux)
 
 ## Contributing
 
-like make the pull request and do the thing
+like make the pull request and do the thing, simple as that!
 
 ## Building
 
@@ -114,7 +114,7 @@ ReplitRPC has a desktop app that interfaces with Discord and the extension, and 
 
 ### Is this against Discord's TOS?
 
-No. This is literally just a rich presence.
+No. This is literally just a rich presence. Read more about Discord Rich Presence [here](https://discord.com/rich-presence).
 
 ### Can I hide the name of the repl I'm working on?
 
